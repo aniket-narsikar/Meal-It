@@ -16,14 +16,14 @@ public String display()
 {
 return "<h1>Welcome to Meal It App</h1>";	
 }
-	@GetMapping("/login")
-	public User checkUserDao()
-	{
-		User user=new User();
-		user.setEmail("sachin@java.com");
-		user.setName("Sachin");
-		user.setPassword("Sachin#123");
-		dao.saveUser(user);
-		return dao.findUserByEmailAndPassword("sachin@java.com", "Sachin#123");
-	}
+//	@GetMapping("/login")
+//	public User checkUserDao()
+//	{
+//		User user=new User();
+//		user.setEmail("sachin@java.com");
+//		user.setName("Sachin");
+//		user.setPassword("Sachin#123");
+//		dao.saveUser(user);
+//		return dao.findUserByEmailAndPassword("sachin@java.com", "Sachin#123");
+//	}
 }

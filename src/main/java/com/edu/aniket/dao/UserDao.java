@@ -32,6 +32,7 @@ public class UserDao {
 	}
 	throw new UserWithEmailAndPasswordNotFound("No user with given Email and password");
  }
- public void  deleteUserById(long iserId) {
+ public void  deleteUserById(long userId) {
+	 userRespostory.delete(findUserById(userId));
  }
 }
