@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.edu.aniket.entity.Item;
 import com.edu.aniket.exception.ItemWithIdNotFound;
 import com.edu.aniket.repostory.ItemRespostory;
+
+@Repository
 public class ItemDao {
 
 
