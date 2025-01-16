@@ -2,7 +2,9 @@ package com.edu.aniket.dao;
 
 import java.util.Optional;
 
+import jakarta.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.edu.aniket.entity.User;
 import com.edu.aniket.exception.UserIdNotFound;
