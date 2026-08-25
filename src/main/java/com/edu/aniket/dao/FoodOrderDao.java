@@ -1,19 +1,44 @@
 package com.edu.aniket.dao;
-import  com.edu.aniket.entity.FoodOrder;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.edu.aniket.entity.FoodOrder;
+import com.edu.aniket.exception.FoodOrderNotFoundException;
+import com.edu.aniket.repository.FoodOrderRepository;
+
+@Repository
 public class FoodOrderDao {
-	public void saveFoodOrder(FoodOrder foodOrder) {
 
+	@Autowired
+	private FoodOrderRepository foodOrderRepository;
+
+	public FoodOrder saveFoodOrder(FoodOrder foodOrder) {
+		return foodOrderRepository.save(foodOrder);
 	}
 
-	public void findFoodOrderById(long foodOrderId) {
-
+	public FoodOrder findFoodOrderById(long foodOrderId) {
+		Optional<FoodOrder> optional = foodOrderRepository.findById(foodOrderId);
+		if (optional.isPresent()) {
+			return optional.get();
+		}
+		throw new FoodOrderNotFoundException("Food Order not found with id: " + foodOrderId);
 	}
 
-	public void findAllFoodOrder() {
-
+	public List<FoodOrder> findAllFoodOrder() {
+		return foodOrderRepository.findAll();
 	}
 
 	public void removeFoodOrderById(long foodOrderId) {
+		FoodOrder foodOrder = findFoodOrderById(foodOrderId);
+		foodOrderRepository.delete(foodOrder);
+	}
 
+	public FoodOrder updateFoodOrder(FoodOrder foodOrder) {
+		findFoodOrderById(foodOrder.getId());
+		return foodOrderRepository.save(foodOrder);
 	}
 }

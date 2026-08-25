@@ -1,17 +1,19 @@
 package com.edu.aniket.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
-
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserIdNotFound extends RuntimeException {
-private String message;
 
-@Override
-public String getMessage() {
-	
-	return message;
-}
+	private String message;
+
+	public UserIdNotFound() {
+	}
+
+	public UserIdNotFound(String message) {
+		super(message);
+		this.message = message;
+	}
+
+	@Override
+	public String getMessage() {
+		return message;
+	}
 }

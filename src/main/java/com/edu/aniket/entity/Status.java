@@ -1,6 +1,5 @@
 package com.edu.aniket.entity;
 
 public enum Status {
-	RECIVED, PREPRING, READYTOSERVE,DELIVERED;
-
+	PLACED, RECIVED, PREPRING, READYTOSERVE, DELIVERED, CANCELLED;
 }
