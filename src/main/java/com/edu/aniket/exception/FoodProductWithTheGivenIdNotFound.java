@@ -1,22 +1,19 @@
 package com.edu.aniket.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class FoodProductWithTheGivenIdNotFound extends RuntimeException
-{
+public class FoodProductWithTheGivenIdNotFound extends RuntimeException {
 
 	private String message;
-	
+
+	public FoodProductWithTheGivenIdNotFound() {
+	}
+
+	public FoodProductWithTheGivenIdNotFound(String message) {
+		super(message);
+		this.message = message;
+	}
+
 	@Override
-	public String getMessage()
-	{
+	public String getMessage() {
 		return message;
 	}
 }

@@ -8,42 +8,37 @@ import org.springframework.stereotype.Repository;
 
 import com.edu.aniket.entity.Item;
 import com.edu.aniket.exception.ItemWithIdNotFound;
-import com.edu.aniket.repostory.ItemRespostory;
+import com.edu.aniket.repository.ItemRepository;
 
 @Repository
 public class ItemDao {
 
-
 	@Autowired
-	private ItemRespostory itemRespostory;
+	private ItemRepository itemRepository;
 
 	public Item saveItem(Item item) {
-		return itemRespostory.save(item);
+		return itemRepository.save(item);
 	}
 
 	public Item findItemById(long itemId) {
-		Optional<Item> optionalItem = itemRespostory.findById(itemId);
+		Optional<Item> optionalItem = itemRepository.findById(itemId);
 		if (optionalItem.isPresent()) {
 			return optionalItem.get();
 		}
-		throw new ItemWithIdNotFound("Item with the given Id Not Found");
+		throw new ItemWithIdNotFound("Item not found with id: " + itemId);
 	}
 
 	public List<Item> findAllItem() {
-		return itemRespostory.findAll();
+		return itemRepository.findAll();
 	}
 
 	public void removeItemById(long itemId) {
-		itemRespostory.delete(findItemById(itemId));
+		Item item = findItemById(itemId);
+		itemRepository.delete(item);
 	}
 
-//public void saveItem(Item item){
-//}
-//public void findItemById(long itemId) {
-//}
-//public void findAllItem(){
-//}
-//public void removeItemById(long itemId){
-//}
-
+	public Item updateItem(Item item) {
+		findItemById(item.getId());
+		return itemRepository.save(item);
+	}
 }

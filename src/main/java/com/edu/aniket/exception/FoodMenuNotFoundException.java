@@ -1,13 +1,13 @@
 package com.edu.aniket.exception;
 
-public class ItemWithIdNotFound extends RuntimeException {
+public class FoodMenuNotFoundException extends RuntimeException {
 
 	private String message;
 
-	public ItemWithIdNotFound() {
+	public FoodMenuNotFoundException() {
 	}
 
-	public ItemWithIdNotFound(String message) {
+	public FoodMenuNotFoundException(String message) {
 		super(message);
 		this.message = message;
 	}

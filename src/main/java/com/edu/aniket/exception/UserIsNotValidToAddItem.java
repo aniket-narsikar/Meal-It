@@ -1,13 +1,13 @@
 package com.edu.aniket.exception;
 
-public class ItemWithIdNotFound extends RuntimeException {
+public class UserIsNotValidToAddItem extends RuntimeException {
 
 	private String message;
 
-	public ItemWithIdNotFound() {
+	public UserIsNotValidToAddItem() {
 	}
 
-	public ItemWithIdNotFound(String message) {
+	public UserIsNotValidToAddItem(String message) {
 		super(message);
 		this.message = message;
 	}
