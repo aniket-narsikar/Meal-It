@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.edu.aniket.config.ResponseStructure;
 import com.edu.aniket.dao.FoodOrderDao;
 import com.edu.aniket.dao.UserDao;
+import com.edu.aniket.dto.PageResponse;
 import com.edu.aniket.entity.FoodOrder;
 import com.edu.aniket.entity.FoodProduct;
 import com.edu.aniket.entity.Status;
@@ -19,11 +24,14 @@ import com.edu.aniket.entity.User;
 @Service
 public class FoodOrderService {
 
-	@Autowired
-	private FoodOrderDao foodOrderDao;
+	private final FoodOrderDao foodOrderDao;
+	private final UserDao userDao;
 
 	@Autowired
-	private UserDao userDao;
+	public FoodOrderService(FoodOrderDao foodOrderDao, UserDao userDao) {
+		this.foodOrderDao = foodOrderDao;
+		this.userDao = userDao;
+	}
 
 	public ResponseEntity<ResponseStructure<FoodOrder>> saveFoodOrder(FoodOrder foodOrder, long userId) {
 		User user = userDao.findUserById(userId);
@@ -70,6 +78,28 @@ public class FoodOrderService {
 		responseStructure.setData(foodOrders);
 		responseStructure.setMessage("All Food Orders Retrieved Successfully");
 		responseStructure.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+	}
+
+	public ResponseEntity<ResponseStructure<PageResponse<FoodOrder>>> findAllFoodOrdersPaginated(int page, int size, String sort) {
+		if (page < 0) page = 0;
+		if (size <= 0) size = 10;
+		if (size > 100) size = 100;
+
+		String[] sortParams = sort.split(",");
+		String sortField = sortParams[0];
+		Sort.Direction direction = (sortParams.length > 1 && sortParams[1].equalsIgnoreCase("desc"))
+				? Sort.Direction.DESC : Sort.Direction.ASC;
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+		Page<FoodOrder> orderPage = foodOrderDao.findAllFoodOrder(pageable);
+		PageResponse<FoodOrder> pageResponse = PageResponse.fromPage(orderPage);
+
+		ResponseStructure<PageResponse<FoodOrder>> responseStructure = new ResponseStructure<>();
+		responseStructure.setData(pageResponse);
+		responseStructure.setMessage("Food Orders fetched successfully");
+		responseStructure.setStatus(HttpStatus.OK.value());
+
 		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
 	}
 

@@ -39,15 +39,6 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		return new ResponseEntity<>(responseStructure, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(UserIdNotFound.class)
-	public ResponseEntity<ResponseStructure<String>> handleUserIdNotFound(UserIdNotFound e) {
-		ResponseStructure<String> responseStructure = new ResponseStructure<>();
-		responseStructure.setData(e.getMessage());
-		responseStructure.setMessage("User Id Not Found");
-		responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
-		return new ResponseEntity<>(responseStructure, HttpStatus.NOT_FOUND);
-	}
-
 	@ExceptionHandler(ItemWithIdNotFound.class)
 	public ResponseEntity<ResponseStructure<String>> handleItemWithIdNotFound(ItemWithIdNotFound e) {
 		ResponseStructure<String> responseStructure = new ResponseStructure<>();
@@ -84,13 +75,40 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		return new ResponseEntity<>(responseStructure, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(UserIsNotValidToAddItem.class)
-	public ResponseEntity<ResponseStructure<String>> handleUserIsNotValidToAddItem(UserIsNotValidToAddItem exception) {
+	@ExceptionHandler(UserIsNotValidToAddItemException.class)
+	public ResponseEntity<ResponseStructure<String>> handleUserIsNotValidToAddItemException(UserIsNotValidToAddItemException exception) {
 		ResponseStructure<String> responseStructure = new ResponseStructure<>();
 		responseStructure.setData(exception.getMessage());
 		responseStructure.setMessage("User Access Denied");
 		responseStructure.setStatus(HttpStatus.FORBIDDEN.value());
 		return new ResponseEntity<>(responseStructure, HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler({org.springframework.security.authentication.BadCredentialsException.class, org.springframework.security.core.AuthenticationException.class})
+	public ResponseEntity<ResponseStructure<String>> handleAuthenticationException(Exception e) {
+		ResponseStructure<String> responseStructure = new ResponseStructure<>();
+		responseStructure.setData(e.getMessage());
+		responseStructure.setMessage("Unauthorized: Authentication Failed");
+		responseStructure.setStatus(HttpStatus.UNAUTHORIZED.value());
+		return new ResponseEntity<>(responseStructure, HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+	public ResponseEntity<ResponseStructure<String>> handleAccessDeniedException(org.springframework.security.access.AccessDeniedException e) {
+		ResponseStructure<String> responseStructure = new ResponseStructure<>();
+		responseStructure.setData(e.getMessage());
+		responseStructure.setMessage("Forbidden: Access Denied");
+		responseStructure.setStatus(HttpStatus.FORBIDDEN.value());
+		return new ResponseEntity<>(responseStructure, HttpStatus.FORBIDDEN);
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ResponseStructure<String>> handleIllegalArgumentException(IllegalArgumentException e) {
+		ResponseStructure<String> responseStructure = new ResponseStructure<>();
+		responseStructure.setData(e.getMessage());
+		responseStructure.setMessage("Bad Request");
+		responseStructure.setStatus(HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<>(responseStructure, HttpStatus.BAD_REQUEST);
 	}
 
 	@Override

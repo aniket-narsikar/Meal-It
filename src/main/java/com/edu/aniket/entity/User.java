@@ -16,6 +16,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 @Entity
 @Table(name = "MealItUserTable")
 public class User {
@@ -34,6 +36,7 @@ public class User {
 	@Column(unique = true)
 	@Min(value = 6000000000L)
 	@Max(value = 9999999999L)
+	@JsonAlias({"phone_number", "phoneNumber"})
 	private long phoneNumber;
 
 	private String password;
