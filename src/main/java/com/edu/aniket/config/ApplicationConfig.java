@@ -5,14 +5,18 @@ import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class ApplicationConfig {
+
 	@Bean
 	public OpenAPI swaggerDocOpenApi() {
 		Server devlopmentServer = new Server();
@@ -40,9 +44,19 @@ public class ApplicationConfig {
 		info.termsOfService("www.mealit.in");
 		info.license(license);
 
+		SecurityScheme securityScheme = new SecurityScheme()
+				.name("Bearer Authentication")
+				.type(SecurityScheme.Type.HTTP)
+				.bearerFormat("JWT")
+				.scheme("bearer");
+
+		SecurityRequirement securityRequirement = new SecurityRequirement().addList("Bearer Authentication");
+
 		OpenAPI openAPI = new OpenAPI();
 		openAPI.info(info);
 		openAPI.servers(Arrays.asList(devlopmentServer, productionServer));
+		openAPI.addSecurityItem(securityRequirement);
+		openAPI.components(new Components().addSecuritySchemes("Bearer Authentication", securityScheme));
 
 		return openAPI;
 	}

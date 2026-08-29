@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.edu.aniket.entity.Item;
@@ -13,8 +15,12 @@ import com.edu.aniket.repository.ItemRepository;
 @Repository
 public class ItemDao {
 
+	private final ItemRepository itemRepository;
+
 	@Autowired
-	private ItemRepository itemRepository;
+	public ItemDao(ItemRepository itemRepository) {
+		this.itemRepository = itemRepository;
+	}
 
 	public Item saveItem(Item item) {
 		return itemRepository.save(item);
@@ -30,6 +36,10 @@ public class ItemDao {
 
 	public List<Item> findAllItem() {
 		return itemRepository.findAll();
+	}
+
+	public Page<Item> findAllItem(Pageable pageable) {
+		return itemRepository.findAll(pageable);
 	}
 
 	public void removeItemById(long itemId) {
