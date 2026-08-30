@@ -41,7 +41,8 @@ public class FoodOrderService {
 		if (foodOrder.getProducts() != null && !foodOrder.getProducts().isEmpty()) {
 			double total = 0;
 			for (FoodProduct product : foodOrder.getProducts()) {
-				total += product.getTotalPrice();
+				double price = product.getTotalPrice() - product.getDiscount();
+				total += Math.max(0, price);
 			}
 			foodOrder.setTotalPrice(total);
 		}
@@ -119,6 +120,18 @@ public class FoodOrderService {
 		ResponseStructure<FoodOrder> responseStructure = new ResponseStructure<>();
 		responseStructure.setData(updatedOrder);
 		responseStructure.setMessage("Food Order Status Updated Successfully");
+		responseStructure.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+	}
+
+	public ResponseEntity<ResponseStructure<List<FoodOrder>>> findFoodOrdersByUserId(long userId) {
+		User user = userDao.findUserById(userId);
+		List<FoodOrder> orders = user.getFoodOrders() != null ? new ArrayList<>(user.getFoodOrders()) : new ArrayList<>();
+		orders.sort((a, b) -> Long.compare(b.getId(), a.getId()));
+
+		ResponseStructure<List<FoodOrder>> responseStructure = new ResponseStructure<>();
+		responseStructure.setData(orders);
+		responseStructure.setMessage("User Food Orders Retrieved Successfully");
 		responseStructure.setStatus(HttpStatus.OK.value());
 		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
 	}

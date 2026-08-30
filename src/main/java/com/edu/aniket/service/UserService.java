@@ -11,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import com.edu.aniket.dto.LoginRequest;
 import com.edu.aniket.dto.PageResponse;
 import com.edu.aniket.dto.UserDto;
 import com.edu.aniket.entity.User;
+import com.edu.aniket.exception.UserIdNotFoundException;
 import com.edu.aniket.exception.UserWithEmailAndPasswordNotFound;
 import com.edu.aniket.security.CustomUserDetailsService;
 import com.edu.aniket.security.JwtUtil;
@@ -181,6 +184,21 @@ public class UserService {
 		responseStructure.setMessage("User Updated Successfully");
 		responseStructure.setStatus(HttpStatus.OK.value());
 		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+	}
+
+	public ResponseEntity<ResponseStructure<UserDto>> getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getName())) {
+			String email = authentication.getName();
+			User user = userDao.findByEmail(email)
+					.orElseThrow(() -> new UserIdNotFoundException("Current user not found"));
+			ResponseStructure<UserDto> responseStructure = new ResponseStructure<>();
+			responseStructure.setData(mapUserEntityToUserDto(user));
+			responseStructure.setMessage("Current user details retrieved");
+			responseStructure.setStatus(HttpStatus.OK.value());
+			return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+		}
+		throw new UserIdNotFoundException("No authenticated user session found");
 	}
 
 	public UserDto mapUserEntityToUserDto(User user) {
