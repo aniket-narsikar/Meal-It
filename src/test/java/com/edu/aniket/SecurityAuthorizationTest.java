@@ -57,7 +57,7 @@ public class SecurityAuthorizationTest {
 		mockMvc.perform(get("/user/findAll"))
 				.andExpect(status().isUnauthorized());
 
-		mockMvc.perform(get("/item/findAll"))
+		mockMvc.perform(get("/foodorder/findAll"))
 				.andExpect(status().isUnauthorized());
 	}
 

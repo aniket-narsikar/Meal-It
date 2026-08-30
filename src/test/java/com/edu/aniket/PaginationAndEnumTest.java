@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import com.edu.aniket.dto.PageResponse;
+import com.edu.aniket.entity.OrderType;
 import com.edu.aniket.entity.Status;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +30,16 @@ public class PaginationAndEnumTest {
 
 		assertFalse(names.contains("RECIVED"), "RECIVED typo should be removed");
 		assertFalse(names.contains("PREPRING"), "PREPRING typo should be removed");
+	}
+
+	@Test
+	public void testOrderTypeEnumValues() {
+		OrderType[] orderTypes = OrderType.values();
+		List<String> names = Arrays.stream(orderTypes).map(Enum::name).toList();
+
+		assertEquals(2, names.size());
+		assertTrue(names.contains("DINE_IN"));
+		assertTrue(names.contains("HOME_DELIVERY"));
 	}
 
 	@Test
