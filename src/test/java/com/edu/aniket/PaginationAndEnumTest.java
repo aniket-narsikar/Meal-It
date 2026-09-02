@@ -57,4 +57,19 @@ public class PaginationAndEnumTest {
 		assertTrue(response.isFirst());
 		assertFalse(response.isLast());
 	}
+
+	@Test
+	public void testRoleEnumValues() {
+		com.edu.aniket.entity.Role[] roles = com.edu.aniket.entity.Role.values();
+		List<String> names = Arrays.stream(roles).map(Enum::name).toList();
+
+		assertEquals(6, names.size());
+		assertTrue(names.contains("ADMIN"));
+		assertTrue(names.contains("MANAGER"));
+		assertTrue(names.contains("STAFF"));
+		assertTrue(names.contains("CHEF"));
+		assertTrue(names.contains("WAITER"));
+		assertTrue(names.contains("CUSTOMER"));
+	}
 }
+

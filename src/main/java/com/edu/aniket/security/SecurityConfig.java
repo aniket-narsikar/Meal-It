@@ -70,6 +70,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/item/save", "/foodproduct/save").hasAnyRole("ADMIN", "MANAGER")
 						.requestMatchers(HttpMethod.PUT, "/item/update", "/foodproduct/update").hasAnyRole("ADMIN", "MANAGER")
 						.requestMatchers(HttpMethod.DELETE, "/item/delete", "/foodproduct/delete").hasAnyRole("ADMIN", "MANAGER")
+						.requestMatchers("/api/admin/**", "/admin/**").hasRole("ADMIN")
 						.anyRequest().authenticated()
 				)
 				.authenticationProvider(authenticationProvider())

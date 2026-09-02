@@ -19,10 +19,12 @@ import org.springframework.stereotype.Service;
 
 import com.edu.aniket.config.ResponseStructure;
 import com.edu.aniket.dao.UserDao;
+import com.edu.aniket.dto.AdminCreateUserRequest;
 import com.edu.aniket.dto.AuthResponse;
 import com.edu.aniket.dto.LoginRequest;
 import com.edu.aniket.dto.PageResponse;
 import com.edu.aniket.dto.UserDto;
+import com.edu.aniket.entity.Role;
 import com.edu.aniket.entity.User;
 import com.edu.aniket.exception.UserIdNotFoundException;
 import com.edu.aniket.exception.UserWithEmailAndPasswordNotFound;
@@ -51,6 +53,10 @@ public class UserService {
 	}
 
 	public ResponseEntity<ResponseStructure<UserDto>> saveUser(User user) {
+		if (user.getRole() != null && user.getRole() != Role.CUSTOMER) {
+			throw new IllegalArgumentException("Public registration cannot specify privileged roles: " + user.getRole());
+		}
+		user.setRole(Role.CUSTOMER);
 		if (user.getPassword() != null && !user.getPassword().isEmpty()) {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 		}
@@ -170,9 +176,10 @@ public class UserService {
 
 	public ResponseEntity<ResponseStructure<UserDto>> updateUser(User user) {
 		User existingUser = userDao.findUserById(user.getId());
+		user.setRole(existingUser.getRole());
 		if (user.getPassword() != null && !user.getPassword().isEmpty()
 				&& !user.getPassword().equals(existingUser.getPassword())) {
-			if (!user.getPassword().startsWith("$2a$") && !user.getPassword().startsWith("$2b$")) {
+			if (!user.getPassword().startsWith("$2a$") && !user.getPassword().startsWith("$2b$") && !user.getPassword().startsWith("$2y$")) {
 				user.setPassword(passwordEncoder.encode(user.getPassword()));
 			}
 		} else {
@@ -184,6 +191,25 @@ public class UserService {
 		responseStructure.setMessage("User Updated Successfully");
 		responseStructure.setStatus(HttpStatus.OK.value());
 		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+	}
+
+	public ResponseEntity<ResponseStructure<UserDto>> createPrivilegedUser(AdminCreateUserRequest request, Role assignedRole) {
+		if (userDao.findByEmail(request.getEmail()).isPresent()) {
+			throw new IllegalArgumentException("User with email " + request.getEmail() + " already exists");
+		}
+		User user = new User();
+		user.setName(request.getName());
+		user.setEmail(request.getEmail());
+		user.setPhoneNumber(request.getPhoneNumber());
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
+		user.setRole(assignedRole);
+
+		User savedUser = userDao.saveUser(user);
+		ResponseStructure<UserDto> responseStructure = new ResponseStructure<>();
+		responseStructure.setData(mapUserEntityToUserDto(savedUser));
+		responseStructure.setMessage("User Created Successfully with Role: " + assignedRole);
+		responseStructure.setStatus(HttpStatus.CREATED.value());
+		return new ResponseEntity<>(responseStructure, HttpStatus.CREATED);
 	}
 
 	public ResponseEntity<ResponseStructure<UserDto>> getCurrentUser() {
