@@ -56,6 +56,12 @@ public class UserService {
 		if (user.getRole() != null && user.getRole() != Role.CUSTOMER) {
 			throw new IllegalArgumentException("Public registration cannot specify privileged roles: " + user.getRole());
 		}
+		if (user.getEmail() != null && userDao.findByEmail(user.getEmail().trim()).isPresent()) {
+			throw new IllegalArgumentException("User with email " + user.getEmail() + " already exists");
+		}
+		if (userDao.findByPhoneNumber(user.getPhoneNumber()).isPresent()) {
+			throw new IllegalArgumentException("User with phone number " + user.getPhoneNumber() + " already exists");
+		}
 		user.setRole(Role.CUSTOMER);
 		if (user.getPassword() != null && !user.getPassword().isEmpty()) {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -194,12 +200,15 @@ public class UserService {
 	}
 
 	public ResponseEntity<ResponseStructure<UserDto>> createPrivilegedUser(AdminCreateUserRequest request, Role assignedRole) {
-		if (userDao.findByEmail(request.getEmail()).isPresent()) {
+		if (userDao.findByEmail(request.getEmail().trim()).isPresent()) {
 			throw new IllegalArgumentException("User with email " + request.getEmail() + " already exists");
 		}
+		if (userDao.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+			throw new IllegalArgumentException("User with phone number " + request.getPhoneNumber() + " already exists");
+		}
 		User user = new User();
-		user.setName(request.getName());
-		user.setEmail(request.getEmail());
+		user.setName(request.getName().trim());
+		user.setEmail(request.getEmail().trim());
 		user.setPhoneNumber(request.getPhoneNumber());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setRole(assignedRole);
