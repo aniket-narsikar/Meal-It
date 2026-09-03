@@ -23,6 +23,15 @@ public class FoodOrder {
 	@Enumerated(EnumType.STRING)
 	private Status foodStatus;
 
+	@Enumerated(EnumType.STRING)
+	private OrderType orderType;
+
+	private String tableNumber;
+
+	private String deliveryAddress;
+
+	private String specialInstructions;
+
 	@CreationTimestamp
 	private LocalDateTime orderCreatedTime;
 
@@ -45,6 +54,19 @@ public class FoodOrder {
 		this.products = products;
 	}
 
+	public FoodOrder(long id, Status foodStatus, OrderType orderType, String tableNumber, String deliveryAddress, String specialInstructions, LocalDateTime orderCreatedTime, LocalDateTime orderDeliveryTime, double totalPrice, List<FoodProduct> products) {
+		this.id = id;
+		this.foodStatus = foodStatus;
+		this.orderType = orderType;
+		this.tableNumber = tableNumber;
+		this.deliveryAddress = deliveryAddress;
+		this.specialInstructions = specialInstructions;
+		this.orderCreatedTime = orderCreatedTime;
+		this.orderDeliveryTime = orderDeliveryTime;
+		this.totalPrice = totalPrice;
+		this.products = products;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -59,6 +81,38 @@ public class FoodOrder {
 
 	public void setFoodStatus(Status foodStatus) {
 		this.foodStatus = foodStatus;
+	}
+
+	public OrderType getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(OrderType orderType) {
+		this.orderType = orderType;
+	}
+
+	public String getTableNumber() {
+		return tableNumber;
+	}
+
+	public void setTableNumber(String tableNumber) {
+		this.tableNumber = tableNumber;
+	}
+
+	public String getDeliveryAddress() {
+		return deliveryAddress;
+	}
+
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
+	}
+
+	public String getSpecialInstructions() {
+		return specialInstructions;
+	}
+
+	public void setSpecialInstructions(String specialInstructions) {
+		this.specialInstructions = specialInstructions;
 	}
 
 	public LocalDateTime getOrderCreatedTime() {

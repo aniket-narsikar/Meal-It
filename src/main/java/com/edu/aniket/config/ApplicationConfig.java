@@ -19,13 +19,17 @@ public class ApplicationConfig {
 
 	@Bean
 	public OpenAPI swaggerDocOpenApi() {
+		Server currentServer = new Server();
+		currentServer.setUrl("/");
+		currentServer.setDescription("Current Server (Auto-detected)");
+
 		Server devlopmentServer = new Server();
 		devlopmentServer.setUrl("http://localhost:8081");
-		devlopmentServer.setDescription("This Url is For Development");
+		devlopmentServer.setDescription("Local Development Server");
 
 		Server productionServer = new Server();
-		productionServer.setUrl("http://localhost:8081");
-		productionServer.setDescription("This Url is For Production");
+		productionServer.setUrl("https://meal-it-production.up.railway.app");
+		productionServer.setDescription("Cloud Production Server");
 
 		Contact contact = new Contact();
 		contact.setName("MealIt");
@@ -54,7 +58,7 @@ public class ApplicationConfig {
 
 		OpenAPI openAPI = new OpenAPI();
 		openAPI.info(info);
-		openAPI.servers(Arrays.asList(devlopmentServer, productionServer));
+		openAPI.servers(Arrays.asList(currentServer, productionServer, devlopmentServer));
 		openAPI.addSecurityItem(securityRequirement);
 		openAPI.components(new Components().addSecuritySchemes("Bearer Authentication", securityScheme));
 

@@ -39,6 +39,10 @@ public class UserDao {
 		return userRepository.findByEmail(email);
 	}
 
+	public Optional<User> findByPhoneNumber(long phoneNumber) {
+		return userRepository.findByPhoneNumber(phoneNumber);
+	}
+
 	public User findUserByEmailAndPassword(String email, String password) {
 		Optional<User> optional = userRepository.findUserByEmailAndPassword(email, password);
 		if (optional.isPresent()) {

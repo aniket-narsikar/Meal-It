@@ -106,7 +106,17 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	public ResponseEntity<ResponseStructure<String>> handleIllegalArgumentException(IllegalArgumentException e) {
 		ResponseStructure<String> responseStructure = new ResponseStructure<>();
 		responseStructure.setData(e.getMessage());
-		responseStructure.setMessage("Bad Request");
+		responseStructure.setMessage(e.getMessage());
+		responseStructure.setStatus(HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<>(responseStructure, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+	public ResponseEntity<ResponseStructure<String>> handleDataIntegrityViolationException(org.springframework.dao.DataIntegrityViolationException e) {
+		ResponseStructure<String> responseStructure = new ResponseStructure<>();
+		String detail = e.getMostSpecificCause() != null ? e.getMostSpecificCause().getMessage() : e.getMessage();
+		responseStructure.setData(detail);
+		responseStructure.setMessage("A user with this email or phone number already exists.");
 		responseStructure.setStatus(HttpStatus.BAD_REQUEST.value());
 		return new ResponseEntity<>(responseStructure, HttpStatus.BAD_REQUEST);
 	}

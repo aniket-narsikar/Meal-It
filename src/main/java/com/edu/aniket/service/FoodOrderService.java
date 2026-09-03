@@ -18,6 +18,7 @@ import com.edu.aniket.dao.UserDao;
 import com.edu.aniket.dto.PageResponse;
 import com.edu.aniket.entity.FoodOrder;
 import com.edu.aniket.entity.FoodProduct;
+import com.edu.aniket.entity.OrderType;
 import com.edu.aniket.entity.Status;
 import com.edu.aniket.entity.User;
 
@@ -38,10 +39,23 @@ public class FoodOrderService {
 		if (foodOrder.getFoodStatus() == null) {
 			foodOrder.setFoodStatus(Status.PLACED);
 		}
+		if (foodOrder.getOrderType() == null) {
+			foodOrder.setOrderType(OrderType.HOME_DELIVERY);
+		}
+		if (foodOrder.getOrderType() == OrderType.DINE_IN) {
+			if (foodOrder.getTableNumber() == null || foodOrder.getTableNumber().trim().isEmpty()) {
+				throw new IllegalArgumentException("Table number is required for DINE_IN orders");
+			}
+		} else if (foodOrder.getOrderType() == OrderType.HOME_DELIVERY) {
+			if (foodOrder.getDeliveryAddress() == null || foodOrder.getDeliveryAddress().trim().isEmpty()) {
+				throw new IllegalArgumentException("Delivery address is required for HOME_DELIVERY orders");
+			}
+		}
 		if (foodOrder.getProducts() != null && !foodOrder.getProducts().isEmpty()) {
 			double total = 0;
 			for (FoodProduct product : foodOrder.getProducts()) {
-				total += product.getTotalPrice();
+				double price = product.getTotalPrice() - product.getDiscount();
+				total += Math.max(0, price);
 			}
 			foodOrder.setTotalPrice(total);
 		}
@@ -119,6 +133,18 @@ public class FoodOrderService {
 		ResponseStructure<FoodOrder> responseStructure = new ResponseStructure<>();
 		responseStructure.setData(updatedOrder);
 		responseStructure.setMessage("Food Order Status Updated Successfully");
+		responseStructure.setStatus(HttpStatus.OK.value());
+		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+	}
+
+	public ResponseEntity<ResponseStructure<List<FoodOrder>>> findFoodOrdersByUserId(long userId) {
+		User user = userDao.findUserById(userId);
+		List<FoodOrder> orders = user.getFoodOrders() != null ? new ArrayList<>(user.getFoodOrders()) : new ArrayList<>();
+		orders.sort((a, b) -> Long.compare(b.getId(), a.getId()));
+
+		ResponseStructure<List<FoodOrder>> responseStructure = new ResponseStructure<>();
+		responseStructure.setData(orders);
+		responseStructure.setMessage("User Food Orders Retrieved Successfully");
 		responseStructure.setStatus(HttpStatus.OK.value());
 		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
 	}

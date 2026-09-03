@@ -1,0 +1,13 @@
+**/.git
+**/.gitignore
+**/.idea
+**/.vscode
+target/
+build/
+logs/
+*.log
+.env
+.env.*
+application-local.properties
+application-local.yml
+*.md

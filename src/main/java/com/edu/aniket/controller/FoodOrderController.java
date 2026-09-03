@@ -1,5 +1,7 @@
 package com.edu.aniket.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,6 +44,16 @@ public class FoodOrderController {
 	@GetMapping("/{id}")
 	public ResponseEntity<ResponseStructure<FoodOrder>> getFoodOrderById(@PathVariable long id) {
 		return foodOrderService.findFoodOrderById(id);
+	}
+
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<ResponseStructure<List<FoodOrder>>> getFoodOrdersByUserId(@PathVariable long userId) {
+		return foodOrderService.findFoodOrdersByUserId(userId);
+	}
+
+	@GetMapping("/user")
+	public ResponseEntity<ResponseStructure<List<FoodOrder>>> findFoodOrdersByUserIdParam(@RequestParam long userId) {
+		return foodOrderService.findFoodOrdersByUserId(userId);
 	}
 
 	@GetMapping("/findAll")

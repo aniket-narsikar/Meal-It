@@ -3,6 +3,7 @@ package com.edu.aniket.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edu.aniket.config.ResponseStructure;
 import com.edu.aniket.dto.AuthResponse;
 import com.edu.aniket.dto.LoginRequest;
+import com.edu.aniket.dto.UserDto;
 import com.edu.aniket.service.UserService;
 
 @RestController
@@ -27,5 +29,10 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<ResponseStructure<AuthResponse>> login(@Validated @RequestBody LoginRequest loginRequest) {
 		return userService.login(loginRequest);
+	}
+
+	@GetMapping("/me")
+	public ResponseEntity<ResponseStructure<UserDto>> getCurrentUser() {
+		return userService.getCurrentUser();
 	}
 }
