@@ -191,6 +191,9 @@ public class UserService {
 		} else {
 			user.setPassword(existingUser.getPassword());
 		}
+		if (user.getFoodOrders() == null) {
+			user.setFoodOrders(existingUser.getFoodOrders());
+		}
 		User updatedUser = userDao.updateUser(user);
 		ResponseStructure<UserDto> responseStructure = new ResponseStructure<>();
 		responseStructure.setData(mapUserEntityToUserDto(updatedUser));

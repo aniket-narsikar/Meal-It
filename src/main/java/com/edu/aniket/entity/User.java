@@ -2,6 +2,7 @@ package com.edu.aniket.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -44,7 +45,7 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<FoodOrder> foodOrders;
 
 	public User() {
