@@ -42,6 +42,10 @@ public class FoodOrder {
 	@OneToMany
 	private List<FoodProduct> products;
 
+	@jakarta.persistence.Transient
+	@com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
+	private Long userId;
+
 	public FoodOrder() {
 	}
 
@@ -145,5 +149,13 @@ public class FoodOrder {
 
 	public void setProducts(List<FoodProduct> products) {
 		this.products = products;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 }

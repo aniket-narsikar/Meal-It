@@ -34,8 +34,17 @@ public class FoodOrderService {
 		this.userDao = userDao;
 	}
 
-	public ResponseEntity<ResponseStructure<FoodOrder>> saveFoodOrder(FoodOrder foodOrder, long userId) {
-		User user = userDao.findUserById(userId);
+	public ResponseEntity<ResponseStructure<FoodOrder>> saveFoodOrder(FoodOrder foodOrder) {
+		org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		User authenticatedUser = userDao.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+
+		User user = authenticatedUser;
+		if (authenticatedUser.getRole() == com.edu.aniket.entity.Role.ADMIN || authenticatedUser.getRole() == com.edu.aniket.entity.Role.MANAGER) {
+			if (foodOrder.getUserId() != null) {
+				user = userDao.findUserById(foodOrder.getUserId());
+			}
+		}
 		if (foodOrder.getFoodStatus() == null) {
 			foodOrder.setFoodStatus(Status.PLACED);
 		}

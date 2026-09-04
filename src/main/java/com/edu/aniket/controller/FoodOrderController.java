@@ -32,8 +32,8 @@ public class FoodOrderController {
 	}
 
 	@PostMapping("/save")
-	public ResponseEntity<ResponseStructure<FoodOrder>> saveFoodOrder(@RequestBody FoodOrder foodOrder, @RequestParam long userId) {
-		return foodOrderService.saveFoodOrder(foodOrder, userId);
+	public ResponseEntity<ResponseStructure<FoodOrder>> saveFoodOrder(@RequestBody FoodOrder foodOrder) {
+		return foodOrderService.saveFoodOrder(foodOrder);
 	}
 
 	@GetMapping("/findById")
