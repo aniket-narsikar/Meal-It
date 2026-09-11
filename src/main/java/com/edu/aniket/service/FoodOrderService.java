@@ -147,6 +147,16 @@ public class FoodOrderService {
 	}
 
 	public ResponseEntity<ResponseStructure<List<FoodOrder>>> findFoodOrdersByUserId(long userId) {
+		org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		User authenticatedUser = userDao.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Authenticated user not found"));
+
+		if (authenticatedUser.getRole() != com.edu.aniket.entity.Role.ADMIN && authenticatedUser.getRole() != com.edu.aniket.entity.Role.MANAGER) {
+			if (authenticatedUser.getId() != userId) {
+				throw new org.springframework.security.access.AccessDeniedException("You do not have permission to view these orders");
+			}
+		}
+
 		User user = userDao.findUserById(userId);
 		List<FoodOrder> orders = user.getFoodOrders() != null ? new ArrayList<>(user.getFoodOrders()) : new ArrayList<>();
 		orders.sort((a, b) -> Long.compare(b.getId(), a.getId()));

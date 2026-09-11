@@ -67,6 +67,7 @@ public class SecurityConfig {
 								"/webjars/**"
 						).permitAll()
 						.requestMatchers(HttpMethod.GET, "/foodproduct/**", "/item/**", "/foodmenu/**", "/dashboard/display").permitAll()
+						.requestMatchers(HttpMethod.GET, "/foodorder/findAll").hasAnyRole("ADMIN", "MANAGER")
 						.requestMatchers(HttpMethod.POST, "/item/save", "/foodproduct/save").hasAnyRole("ADMIN", "MANAGER")
 						.requestMatchers(HttpMethod.PUT, "/item/update", "/foodproduct/update").hasAnyRole("ADMIN", "MANAGER")
 						.requestMatchers(HttpMethod.DELETE, "/item/delete", "/foodproduct/delete").hasAnyRole("ADMIN", "MANAGER")
